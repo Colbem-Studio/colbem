@@ -1,12 +1,14 @@
 {
-	"name": "colbem",
+	"name": "colbe",
+	"private": true,
 	"version": "0.0.1",
+	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "wrangler types --check && vite build && npm run prepack",
+		"build": "wrangler types --check && vite build",
 		"preview": "wrangler dev .svelte-kit/cloudflare/_worker.js --port 4173",
+		"deploy": "npm run build && wrangler deploy",
 		"prepare": "svelte-kit sync || echo ''",
-		"prepack": "svelte-kit sync && svelte-package && publint",
 		"check": "wrangler types --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "eslint .",
@@ -15,27 +17,7 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
-		"auth:schema": "better-auth generate --config src/lib/server/auth.ts --output src/lib/server/db/auth.schema.ts --yes"
-	},
-	"files": [
-		"dist",
-		"!dist/**/*.test.*",
-		"!dist/**/*.spec.*"
-	],
-	"sideEffects": [
-		"**/*.css"
-	],
-	"svelte": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
-		}
-	},
-	"peerDependencies": {
-		"svelte": "^5.0.0"
+		"auth:schema": "better-auth generate --config src/lib/server/auth-client.ts --output src/lib/server/db/auth.schema.ts --yes"
 	},
 	"devDependencies": {
 		"@better-auth/cli": "~1.4.21",
@@ -44,7 +26,6 @@
 		"@libsql/client": "^0.17.3",
 		"@sveltejs/adapter-cloudflare": "^7.2.8",
 		"@sveltejs/kit": "^2.63.0",
-		"@sveltejs/package": "^2.5.8",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/typography": "^0.5.19",
@@ -58,7 +39,6 @@
 		"eslint-plugin-svelte": "^3.19.0",
 		"globals": "^17.6.0",
 		"phosphor-svelte": "^3.1.0",
-		"publint": "^0.3.21",
 		"shadcn-svelte": "^1.4.1",
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
@@ -70,8 +50,5 @@
 		"typescript-eslint": "^8.60.1",
 		"vite": "^8.0.16",
 		"wrangler": "^4.97.0"
-	},
-	"keywords": [
-		"svelte"
-	]
+	}
 }
