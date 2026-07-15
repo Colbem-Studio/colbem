@@ -42,23 +42,23 @@
 		</div>
 
 		<h1 class="mt-6 text-4xl font-bold leading-tight text-white sm:text-5xl">
-			Chat, call, and explore — all in one place.
+			The chat platform<br />built like blocks.
 		</h1>
 
 		<p class="mt-4 max-w-md text-lg text-zinc-400">
-			Message friends, jump on calls, and discover communities built around what you're into.
+			Snap DMs, calls, and communities together into one space that fits exactly how you and your people talk.
 		</p>
 
 		<div class="mt-8 flex gap-3">
 			<a
 				href={resolve('/register')}
-				class="rounded-full bg-blue-500 px-6 py-3 text-sm font-medium text-white hover:bg-blue-400"
+				class="rounded-[15px] bg-blue-500 px-6 py-3 text-sm font-medium text-white hover:bg-blue-400"
 			>
 				Get started
 			</a>
 			<a
 				href="#how-it-works"
-				class="rounded-full bg-white/5 px-6 py-3 text-sm font-medium text-zinc-300 hover:bg-white/10 hover:text-white"
+				class="rounded-[15px] bg-white/5 px-6 py-3 text-sm font-medium text-zinc-300 hover:bg-white/10 hover:text-white"
 			>
 				See how it works
 			</a>
