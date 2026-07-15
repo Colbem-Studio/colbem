@@ -47,7 +47,7 @@
                     <div>
                         <div class="mb-6 flex items-center justify-between">
                             <a href={resolve('/')} class="flex items-center gap-2 text-white">
-                                <img src="/thumbnail/Colbe.png" alt="Colbe" class="h-9 w-9 rounded-[15px]" />
+                                <img src="/favicon.svg" alt="Colbe" class="h-9 w-9 rounded-[15px]" />
                                 <span class="font-bold text-lg">Colbe</span>
                             </a>
                             <Dialog.Close type="button" aria-label="Close menu" class="text-zinc-500 hover:text-white">
@@ -84,7 +84,7 @@
                 Features
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-                <DropdownMenu.Content class="z-50 w-[440px] rounded-[15px] bg-[#1a1720] p-3 shadow-xl" sideOffset={8}>
+                <DropdownMenu.Content class="z-50 w-110 rounded-[15px] bg-[#1a1720] p-3 shadow-xl" sideOffset={8}>
                     <div class="flex flex-col gap-1">
                         {#each featureList as { icon, title, description } (title)}
                             {@const Icon = icon}
