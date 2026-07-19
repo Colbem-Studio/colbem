@@ -2,6 +2,9 @@
 <script lang="ts">
 	import { ChatCircleDots, VideoCamera, Broadcast, ShieldCheck, BellSimple, Plus } from 'phosphor-svelte';
 	import { Accordion } from 'bits-ui';
+	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
+
+	const isMobile = new IsMobile();
 
 	const smallFeatures = [
 		{ icon: VideoCamera, title: 'Video calls', body: 'Group calls over WebRTC, directly from a channel or DM.' },
@@ -10,7 +13,15 @@
 		{ icon: BellSimple, title: 'Notification routing', body: 'Mentions and DMs are prioritized separately from general channel activity.' }
 	];
 
-	const doubledCards = [...Array(8).keys(), ...Array(8).keys()];
+	const showcaseFeatures = [
+		{ icon: ChatCircleDots, title: 'Messaging', body: 'Real-time delivery over a persistent connection.' },
+		{ icon: VideoCamera, title: 'Voice & video', body: 'WebRTC calls, peer-to-peer where possible.' },
+		{ icon: Broadcast, title: 'Live channels', body: 'Updates pushed instantly to every member.' },
+		{ icon: ShieldCheck, title: 'Permissions', body: 'Roles enforced server-side, not client-side.' },
+		{ icon: BellSimple, title: 'Notifications', body: 'Mentions surfaced ahead of general activity.' }
+	];
+
+	const doubledShowcase = [...showcaseFeatures, ...showcaseFeatures];
 </script>
 
 <section id="features" class="mx-auto w-[90%] max-w-7xl py-20">
@@ -30,32 +41,35 @@
 			</div>
 			<div>
 				<h3 class="font-semibold text-foreground">See Colbe in motion</h3>
-				<p class="text-sm text-muted-foreground">A look at the interface.</p>
+				<p class="text-sm text-muted-foreground">A look at what's actually in the platform.</p>
 			</div>
 		</div>
 
-		<div class="marquee-mask flex flex-col gap-4 py-6">
-			<div class="marquee-track marquee-left flex w-max gap-4">
-				{#each doubledCards as card, idx (idx + '-a')}
-					<div class="h-32 w-52 shrink-0 rounded-[15px] border border-border bg-secondary p-4">
-						<span class="text-xs text-muted-foreground">Panel {card + 1}</span>
-						<div class="mt-3 h-2.5 w-3/4 rounded-full bg-muted"></div>
-						<div class="mt-2 h-2 w-1/2 rounded-full bg-muted opacity-60"></div>
-						<div class="mt-6 h-6 w-6 rounded-full bg-primary/30"></div>
+		{#if isMobile.current}
+			<div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3">
+				{#each showcaseFeatures as { icon, title, body } (title)}
+					{@const Icon = icon}
+					<div class="rounded-[15px] border border-border bg-secondary p-4">
+						<Icon size={20} class="text-primary" />
+						<p class="mt-3 text-sm font-semibold text-foreground">{title}</p>
+						<p class="mt-1 text-xs text-muted-foreground">{body}</p>
 					</div>
 				{/each}
 			</div>
-			<div class="marquee-track marquee-right flex w-max gap-4">
-				{#each doubledCards as card, idx (idx + '-b')}
-					<div class="h-32 w-52 shrink-0 rounded-[15px] border border-border bg-secondary p-4">
-						<span class="text-xs text-muted-foreground">Panel {card + 1}</span>
-						<div class="mt-3 h-2.5 w-2/3 rounded-full bg-muted"></div>
-						<div class="mt-2 h-2 w-1/3 rounded-full bg-muted opacity-60"></div>
-						<div class="mt-6 h-6 w-6 rounded-full bg-accent"></div>
-					</div>
-				{/each}
+		{:else}
+			<div class="marquee-mask overflow-hidden py-6">
+				<div class="marquee-track marquee-left flex w-max gap-4">
+					{#each doubledShowcase as { icon, title, body }, idx (idx)}
+						{@const Icon = icon}
+						<div class="h-32 w-56 shrink-0 rounded-[15px] border border-border bg-secondary p-4">
+							<Icon size={20} class="text-primary" />
+							<p class="mt-3 text-sm font-semibold text-foreground">{title}</p>
+							<p class="mt-1 text-xs text-muted-foreground">{body}</p>
+						</div>
+					{/each}
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 
 	<Accordion.Root type="single" class="flex flex-col gap-3">
@@ -86,17 +100,14 @@
 	}
 
 	.marquee-track {
+		animation-name: scroll-left;
 		animation-duration: 35s;
 		animation-timing-function: linear;
 		animation-iteration-count: infinite;
 	}
 
-	.marquee-left {
-		animation-name: scroll-left;
-	}
-
-	.marquee-right {
-		animation-name: scroll-right;
+	.marquee-track:hover {
+		animation-play-state: paused;
 	}
 
 	@keyframes scroll-left {
@@ -105,15 +116,6 @@
 		}
 		to {
 			transform: translateX(-50%);
-		}
-	}
-
-	@keyframes scroll-right {
-		from {
-			transform: translateX(-50%);
-		}
-		to {
-			transform: translateX(0);
 		}
 	}
 </style>
