@@ -22,6 +22,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Registration - Colbe</title>
+</svelte:head>
+
 <AuthCard title="Sign up and start having fun!">
 	<RegisterWizard onsubmit={handleSubmit} />
 	{#if error}

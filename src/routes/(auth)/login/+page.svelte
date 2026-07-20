@@ -24,6 +24,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Log in to Colbe</title>
+</svelte:head>
+
 <AuthCard title="Log in to Colbe">
 	<LoginForm bind:identifier bind:password onsubmit={handleSubmit} />
 	{#if error}

@@ -1,6 +1,6 @@
 <!-- src/lib/components/onboarding/PhoneVerifyStep.svelte -->
 <script lang="ts">
-	import { Phone, ShieldCheck } from 'phosphor-svelte';
+	import { ShieldCheck } from 'phosphor-svelte';
 	import { PinInput, Label } from 'bits-ui';
 
 	let { phone = $bindable(''), code = $bindable(''), codeSent = $bindable(false) }: {
@@ -34,22 +34,21 @@
 
 <div class="flex flex-col gap-2">
 	<Label.Root for="phone" class="text-sm text-muted-foreground">Phone number</Label.Root>
-	<div class="flex items-center gap-2 rounded-[15px] border border-border bg-secondary px-4 py-2.5">
-		<Phone size={16} class="text-muted-foreground" />
+	<div class="flex gap-2">
 		<input
 			id="phone"
 			type="tel"
 			bind:value={phone}
 			placeholder="Enter your phone number"
 			disabled={codeSent}
-			class="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none disabled:opacity-60"
+			class="flex-1 rounded-[15px] border border-border bg-secondary px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors disabled:opacity-60"
 		/>
 		{#if !codeSent}
 			<button
 				type="button"
 				onclick={sendCode}
 				disabled={!phone || sending}
-				class="shrink-0 rounded-[15px] bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
+				class="shrink-0 rounded-[15px] bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-50"
 			>
 				{sending ? 'Sending...' : 'Send code'}
 			</button>

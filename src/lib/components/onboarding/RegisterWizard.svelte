@@ -10,6 +10,7 @@
 	let month = $state('');
 	let day = $state('');
 	let year = $state('');
+	let email = $state('');
 	let username = $state('');
 	let password = $state('');
 	let phone = $state('');
@@ -30,7 +31,7 @@
 			next();
 			return;
 		}
-		onsubmit({ month, day, year, username, password, phone, code });
+		onsubmit({ email, month, day, year, username, password, phone, code });
 	}
 </script>
 
@@ -38,7 +39,7 @@
 	{#if step === 1}
 		<DatePickerField bind:month bind:day bind:year />
 	{:else if step === 2}
-		<UsernameStep bind:username bind:password />
+		<UsernameStep bind:email bind:username bind:password />
 	{:else if step === 3}
 		<PhoneVerifyStep bind:phone bind:code bind:codeSent />
 	{/if}

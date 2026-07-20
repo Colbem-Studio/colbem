@@ -1,11 +1,11 @@
 import { betterAuth } from 'better-auth/minimal';
-import type { BetterAuthPlugin } from 'better-auth/types';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { username } from 'better-auth/plugins';
 import { db } from '$lib/server/db/index.js';
 
 let ORIGIN: string = process.env.ORIGIN ?? '';
 let BETTER_AUTH_SECRET: string | undefined = process.env.BETTER_AUTH_SECRET;
-let plugins: BetterAuthPlugin[] = [];
+let cookiePlugin;
 
 try {
 	const { ORIGIN: envOrigin, BETTER_AUTH_SECRET: envSecret } = await import('$app/env/private');
@@ -14,7 +14,7 @@ try {
 
 	ORIGIN = envOrigin;
 	BETTER_AUTH_SECRET = envSecret;
-	plugins = [sveltekitCookies(getRequestEvent)]; // must stay last in the array
+	cookiePlugin = sveltekitCookies(getRequestEvent);
 } catch {
 	// Running outside SvelteKit (e.g. `better-auth generate`) — fall back to process.env, skip cookie plugin.
 }
@@ -24,5 +24,5 @@ export const auth = betterAuth({
 	secret: BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	emailAndPassword: { enabled: true },
-	plugins
+	plugins: cookiePlugin ? ([username(), cookiePlugin] as const) : ([username()] as const)
 });
