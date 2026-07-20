@@ -17,6 +17,10 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 	}
+
+	interface Window {
+		hideAppSplash?: () => void;
+	}
 }
 
 export {};
