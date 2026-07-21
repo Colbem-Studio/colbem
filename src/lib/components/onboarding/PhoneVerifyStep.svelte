@@ -1,16 +1,40 @@
 <!-- src/lib/components/onboarding/PhoneVerifyStep.svelte -->
 <script lang="ts">
-	import { ShieldCheck } from 'phosphor-svelte';
-	import { PinInput, Label } from 'bits-ui';
+	import { ShieldCheck, CaretDown, ArrowRight } from 'phosphor-svelte';
+	import { PinInput, Label, Select } from 'bits-ui';
 
-	let { phone = $bindable(''), code = $bindable(''), codeSent = $bindable(false) }: {
+	let {
+		phone = $bindable(''),
+		code = $bindable(''),
+		codeSent = $bindable(false),
+		countryCode = $bindable('+267'),
+		skipped = $bindable(false)
+	}: {
 		phone: string;
 		code: string;
 		codeSent: boolean;
+		countryCode: string;
+		skipped: boolean;
 	} = $props();
+
+	// Trim/extend this list as needed
+	const countries = [
+		{ code: '+267', label: 'Botswana', flag: '🇧🇼' },
+		{ code: '+27', label: 'South Africa', flag: '🇿🇦' },
+		{ code: '+1', label: 'United States', flag: '🇺🇸' },
+		{ code: '+44', label: 'United Kingdom', flag: '🇬🇧' },
+		{ code: '+234', label: 'Nigeria', flag: '🇳🇬' },
+		{ code: '+254', label: 'Kenya', flag: '🇰🇪' },
+		{ code: '+263', label: 'Zimbabwe', flag: '🇿🇼' },
+		{ code: '+91', label: 'India', flag: '🇮🇳' }
+	];
 
 	let sending = $state(false);
 	let sendError = $state('');
+
+	const selectedCountry = $derived(
+		countries.find((c) => c.code === countryCode) ?? countries[0]
+	);
 
 	async function sendCode() {
 		sending = true;
@@ -20,7 +44,7 @@
 			const res = await fetch('https://console.colbe.cc/api/verify/send', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ phone })
+				body: JSON.stringify({ phone: `${countryCode}${phone}` })
 			});
 			if (!res.ok) throw new Error('Failed to send code');
 			codeSent = true;
@@ -30,11 +54,39 @@
 			sending = false;
 		}
 	}
+
+	function skip() {
+		skipped = true;
+	}
 </script>
 
 <div class="flex flex-col gap-2">
 	<Label.Root for="phone" class="text-sm text-muted-foreground">Phone number</Label.Root>
 	<div class="flex gap-2">
+		<Select.Root type="single" bind:value={countryCode} disabled={codeSent}>
+			<Select.Trigger
+				class="flex shrink-0 items-center gap-1.5 rounded-[15px] border border-border bg-secondary px-3 py-3 text-sm text-foreground outline-none focus:border-primary transition-colors disabled:opacity-60"
+			>
+				<span>{selectedCountry.flag}</span>
+				<span>{selectedCountry.code}</span>
+				<CaretDown size={12} />
+			</Select.Trigger>
+			<Select.Portal>
+				<Select.Content class="z-50 max-h-64 overflow-y-auto rounded-[15px] border border-border bg-secondary p-1 shadow-lg">
+					{#each countries as country (country.code)}
+						<Select.Item
+							value={country.code}
+							class="flex cursor-pointer items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-foreground outline-none data-[highlighted]:bg-primary/10"
+						>
+							<span>{country.flag}</span>
+							<span>{country.label}</span>
+							<span class="ml-auto text-muted-foreground">{country.code}</span>
+						</Select.Item>
+					{/each}
+				</Select.Content>
+			</Select.Portal>
+		</Select.Root>
+
 		<input
 			id="phone"
 			type="tel"
@@ -75,4 +127,15 @@
 			{/snippet}
 		</PinInput.Root>
 	</div>
+{/if}
+
+{#if !skipped}
+	<button
+		type="button"
+		onclick={skip}
+		class="flex items-center gap-1 self-start text-xs text-muted-foreground underline-offset-2 hover:underline"
+	>
+		Skip for now
+		<ArrowRight size={12} />
+	</button>
 {/if}
