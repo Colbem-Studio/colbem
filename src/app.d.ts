@@ -13,7 +13,11 @@ declare global {
 
 		interface Locals { user?: User; session?: Session }
 
-		// interface Error {}
+		interface Error {
+			message: string;
+			code?: string;
+		}
+
 		// interface PageData {}
 		// interface PageState {}
 	}
