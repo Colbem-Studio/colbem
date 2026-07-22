@@ -1,4 +1,5 @@
-import { fail } from '@sveltejs/kit';
+// login/+page.server.ts
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types.js';
 import { auth } from '$lib/server/auth.js';
 
@@ -22,6 +23,6 @@ export const actions: Actions = {
 			return fail(401, { error: 'Invalid credentials.' });
 		}
 
-		return { success: true };
+		throw redirect(303, '/@me'); 
 	}
 };

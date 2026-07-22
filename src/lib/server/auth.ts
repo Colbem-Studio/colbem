@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { username } from 'better-auth/plugins';
+import { username, emailOTP, phoneNumber } from 'better-auth/plugins';
 import { db } from '$lib/server/db/index.js';
 
 let ORIGIN: string = process.env.ORIGIN ?? '';
@@ -19,10 +19,26 @@ try {
 	// Running outside SvelteKit (e.g. `better-auth generate`) — fall back to process.env, skip cookie plugin.
 }
 
+const basePlugins = [
+	username(),
+	emailOTP({
+		async sendVerificationOTP({ email, otp }) {
+			// TODO: wire up your email provider here (Resend, SendGrid, etc.)
+			console.log(`Send OTP ${otp} to ${email}`);
+		}
+	}),
+	phoneNumber({
+		async sendOTP({ phoneNumber, code }) {
+			// TODO: wire up your SMS provider here (Twilio, etc.)
+			console.log(`Send code ${code} to ${phoneNumber}`);
+		}
+	})
+];
+
 export const auth = betterAuth({
 	baseURL: ORIGIN,
 	secret: BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	emailAndPassword: { enabled: true },
-	plugins: cookiePlugin ? ([username(), cookiePlugin] as const) : ([username()] as const)
+	plugins: cookiePlugin ? [...basePlugins, cookiePlugin] : basePlugins
 });

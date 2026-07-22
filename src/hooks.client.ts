@@ -1,12 +1,14 @@
 // src/hooks.client.ts
 import type { HandleClientError } from '@sveltejs/kit';
 import { printConsoleWarning } from '$lib/client/consoleWarning.js';
+import { authClient } from '$lib/client/auth.js';
 
-printConsoleWarning();
+authClient.getSession().then((result: { data: { session?: unknown } | null }) => {
+	if (result.data?.session) {
+		printConsoleWarning();
+	}
+});
 
-// Catches uncaught client-side errors (failed load functions, render crashes, etc.)
-// Better Auth call failures (signIn/signUp) do NOT throw, so they won't land here —
-// use logAuthError() from consoleWarning.ts at the call site for those instead.
 export const handleError: HandleClientError = ({ error, event, status, message }) => {
 	const err = error as Error | undefined;
 
@@ -31,7 +33,5 @@ export const handleError: HandleClientError = ({ error, event, status, message }
 		console.log('%cStack trace:', "color:#3b82f6; font-family: 'Builder Sans', sans-serif;", err.stack);
 	}
 
-	return {
-		message: 'Something went wrong. Please try again.'
-	};
+	return { message: 'Something went wrong. Please try again.' };
 };

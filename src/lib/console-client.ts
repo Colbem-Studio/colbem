@@ -1,7 +1,9 @@
-// src/lib/console-client.ts
+// src/lib/server/console-client.ts
+// NOTE: server-only — uses a secret API key, never import into client-side code
 import type {
-	ConsolePingResult,
-	ConsoleIncident,
+	ConsoleHealthResult,
+	ConsoleAlgorithmResult,
+	ConsoleRenderResult,
 	SendVerificationCodeRequest,
 	SendVerificationCodeResponse,
 	VerifyCodeRequest,
@@ -9,14 +11,21 @@ import type {
 	ConsoleApiError
 } from './types.js';
 
-// TODO: confirm this is the real base URL — assumed from prior conversation
+// TODO: confirm this is the real base URL
 const CONSOLE_BASE_URL = 'https://console.colbe.cc/api';
+
+const CONSOLE_API_KEY = process.env.CONSOLE_API_KEY;
+
+if (!CONSOLE_API_KEY) {
+	console.warn('CONSOLE_API_KEY is not set — console-client requests will fail authentication.');
+}
 
 async function consoleFetch<T>(path: string, init?: RequestInit): Promise<T> {
 	const res = await fetch(`${CONSOLE_BASE_URL}${path}`, {
 		...init,
 		headers: {
 			'Content-Type': 'application/json',
+			Authorization: `Bearer ${CONSOLE_API_KEY}`,
 			...init?.headers
 		}
 	});
@@ -30,27 +39,35 @@ async function consoleFetch<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const consoleClient = {
-	// TODO: confirm actual endpoint path and response shape
-	getStatus(): Promise<ConsolePingResult[]> {
-		return consoleFetch<ConsolePingResult[]>('/status');
+	// maps to app/api/health
+	// TODO: confirm response shape
+	getHealth(): Promise<ConsoleHealthResult> {
+		return consoleFetch<ConsoleHealthResult>('/health');
 	},
 
-	// TODO: confirm actual endpoint path and response shape
-	getIncidents(): Promise<ConsoleIncident[]> {
-		return consoleFetch<ConsoleIncident[]>('/incidents');
+	// maps to app/api/algorithm
+	// TODO: confirm method (GET/POST?) and payload/response shape
+	getAlgorithm(): Promise<ConsoleAlgorithmResult> {
+		return consoleFetch<ConsoleAlgorithmResult>('/algorithm');
 	},
 
-	// TODO: confirm actual endpoint path, method, and payload shape
+	// maps to app/api/render
+	// TODO: confirm method and payload/response shape
+	getRender(): Promise<ConsoleRenderResult> {
+		return consoleFetch<ConsoleRenderResult>('/render');
+	},
+
+	// maps to app/api/verification — has nested routes based on the expand arrow
+	// TODO: confirm actual sub-paths (e.g. /verification/send vs /verification/code)
 	sendVerificationCode(body: SendVerificationCodeRequest): Promise<SendVerificationCodeResponse> {
-		return consoleFetch<SendVerificationCodeResponse>('/verify/send', {
+		return consoleFetch<SendVerificationCodeResponse>('/verification/send', {
 			method: 'POST',
 			body: JSON.stringify(body)
 		});
 	},
 
-	// TODO: confirm actual endpoint path, method, and payload shape
 	verifyCode(body: VerifyCodeRequest): Promise<VerifyCodeResponse> {
-		return consoleFetch<VerifyCodeResponse>('/verify/confirm', {
+		return consoleFetch<VerifyCodeResponse>('/verification/confirm', {
 			method: 'POST',
 			body: JSON.stringify(body)
 		});

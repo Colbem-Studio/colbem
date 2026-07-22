@@ -1,4 +1,5 @@
-import { fail } from '@sveltejs/kit';
+// register/+page.server.ts
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types.js';
 import { auth } from '$lib/server/auth.js';
 
@@ -29,8 +30,6 @@ export const actions: Actions = {
 		console.log('Registration extra fields (not yet persisted):', { month, day, year, phone });
 
 		try {
-			// TODO: confirm exact body shape — the username plugin extends signUpEmail
-			// to accept `username`, per better-auth's docs. Verify against your installed version.
 			await auth.api.signUpEmail({
 				body: { name: username, email, password, username }
 			});
@@ -39,6 +38,6 @@ export const actions: Actions = {
 			return fail(400, { error: 'Registration failed. Please try again.' });
 		}
 
-		return { success: true };
+		throw redirect(303, '@me'); 
 	}
 };
