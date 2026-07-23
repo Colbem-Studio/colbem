@@ -15,7 +15,7 @@
 		<div class="grid grid-cols-2 gap-10 sm:grid-cols-6">
 			<div class="col-span-2 sm:col-span-3">
 				<div class="flex items-center gap-2">
-					<img src="/favicon.svg" alt="Colbe" class="h-7 w-7 rounded-[15px]" />
+					<img src="/icons/favicon.svg" alt="Colbe" class="h-7 w-7 rounded-[15px]" />
 					<span class="font-semibold text-foreground">Colbe</span>
 				</div>
 				<p class="mt-3 text-sm text-muted-foreground">Built like blocks.</p>
