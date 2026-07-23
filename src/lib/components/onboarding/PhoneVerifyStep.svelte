@@ -76,7 +76,7 @@
 					{#each countries as country (country.code)}
 						<Select.Item
 							value={country.code}
-							class="flex cursor-pointer items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-foreground outline-none data-[highlighted]:bg-primary/10"
+							class="flex cursor-pointer items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-foreground outline-none data-highlighted:bg-primary/10"
 						>
 							<span>{country.flag}</span>
 							<span>{country.label}</span>

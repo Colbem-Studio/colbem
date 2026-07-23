@@ -5,21 +5,20 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
-		<link
-			rel="preload"
-			href="%sveltekit.assets%/fonts/BuilderSans/BuilderSans-Regular-400.otf"
-			as="font"
-			type="font/otf"
-			crossorigin="anonymous"
-		/>
-		<link
-			rel="preload"
-			href="%sveltekit.assets%/fonts/BuilderSans/BuilderSans-Bold-700.otf"
-			as="font"
-			type="font/otf"
-			crossorigin="anonymous"
-		/>
+		<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 		<style>
+			@font-face {
+				font-family: 'Builder Sans';
+				src: url('%sveltekit.assets%/fonts/BuilderSans/BuilderSans-Regular-400.otf') format('opentype');
+				font-weight: 400;
+				font-display: swap;
+			}
+			@font-face {
+				font-family: 'Builder Sans';
+				src: url('%sveltekit.assets%/fonts/BuilderSans/BuilderSans-Bold-700.otf') format('opentype');
+				font-weight: 700;
+				font-display: swap;
+			}
 			#app-splash {
 				position: fixed;
 				inset: 0;

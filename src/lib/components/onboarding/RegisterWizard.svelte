@@ -3,6 +3,7 @@
 	import DatePickerField from './DatePickerField.svelte';
 	import UsernameStep from './UsernameStep.svelte';
 	import PhoneVerifyStep from './PhoneVerifyStep.svelte';
+	import { validateUsername, validateAge } from '$lib/client/username-rules.js';
 
 	let { onsubmit }: { onsubmit: (data: Record<string, string>) => void } = $props();
 
@@ -16,12 +17,40 @@
 	let phone = $state('');
 	let code = $state('');
 	let codeSent = $state(false);
+	let countryCode = $state('+267');
+	let skipped = $state(false);
+
+	let stepError = $state<string | null>(null);
 
 	function next() {
+		stepError = null;
+
+		if (step === 1) {
+			if (!month || !day || !year) {
+				stepError = 'Please select your full birthday.';
+				return;
+			}
+			const birthDate = new Date(Number(year), Number(month) - 1, Number(day));
+			const ageResult = validateAge(birthDate);
+			if (!ageResult.valid) {
+				stepError = ageResult.reason;
+				return;
+			}
+		}
+
+		if (step === 2) {
+			const usernameResult = validateUsername(username);
+			if (!usernameResult.valid) {
+				stepError = usernameResult.reason;
+				return;
+			}
+		}
+
 		step += 1;
 	}
 
 	function back() {
+		stepError = null;
 		step -= 1;
 	}
 
@@ -41,7 +70,11 @@
 	{:else if step === 2}
 		<UsernameStep bind:email bind:username bind:password />
 	{:else if step === 3}
-		<PhoneVerifyStep bind:phone bind:code bind:codeSent />
+		<PhoneVerifyStep bind:phone bind:code bind:codeSent bind:countryCode bind:skipped />
+	{/if}
+
+	{#if stepError}
+		<p class="text-xs text-destructive">{stepError}</p>
 	{/if}
 
 	<div class="mt-2 flex gap-3">

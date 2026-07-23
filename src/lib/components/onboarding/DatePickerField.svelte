@@ -2,6 +2,7 @@
 <script lang="ts">
 	import { CaretDown } from 'phosphor-svelte';
 	import { Select, Label } from 'bits-ui';
+	import { validateAge } from '$lib/client/username-rules.js';
 
 	let { month = $bindable(''), day = $bindable(''), year = $bindable('') }: {
 		month: string;
@@ -19,6 +20,13 @@
 		value: String(currentYear - i),
 		label: String(currentYear - i)
 	}));
+
+	const ageError = $derived.by(() => {
+		if (!month || !day || !year) return null;
+		const birthDate = new Date(Number(year), Number(month) - 1, Number(day));
+		const result = validateAge(birthDate);
+		return result.valid ? null : result.reason;
+	});
 </script>
 
 <div class="flex flex-col gap-2">
@@ -72,4 +80,7 @@
 			</Select.Portal>
 		</Select.Root>
 	</div>
+	{#if ageError}
+		<p class="text-xs text-destructive">{ageError}</p>
+	{/if}
 </div>
