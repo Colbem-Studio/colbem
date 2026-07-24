@@ -38,6 +38,6 @@ export const actions: Actions = {
 			return fail(400, { error: 'Registration failed. Please try again.' });
 		}
 
-		throw redirect(303, '/@me'); 
+		throw redirect(303, '/dashboard'); 
 	}
 };

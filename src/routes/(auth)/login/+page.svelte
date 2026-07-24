@@ -6,21 +6,36 @@
 	let identifier = $state('');
 	let password = $state('');
 	let error = $state('');
+	let submitting = $state(false);
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
+		if (submitting) return;
+		submitting = true;
 		error = '';
+
 		const formData = new FormData();
 		formData.set('identifier', identifier);
 		formData.set('password', password);
 
-		// TODO: confirm this matches your +page.server.ts action name
-		const res = await fetch('?/login', { method: 'POST', body: formData });
-		if (!res.ok) {
-			error = 'Login failed. Check your credentials and try again.';
-			return;
+		try {
+			const res = await fetch('?/login', { method: 'POST', body: formData });
+			const result = await res.json();
+
+			if (result.type === 'redirect') {
+				window.location.href = result.location;
+				return;
+			}
+
+			if (result.type === 'failure') {
+				error = result.data?.error ?? 'Login failed. Check your credentials and try again.';
+				return;
+			}
+
+			error = 'Login failed. Please try again.';
+		} finally {
+			submitting = false;
 		}
-		window.location.href = '/';
 	}
 </script>
 

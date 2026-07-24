@@ -23,6 +23,6 @@ export const actions: Actions = {
 			return fail(401, { error: 'Invalid credentials.' });
 		}
 
-		throw redirect(303, '/@me'); 
+		throw redirect(303, '/dashboard'); 
 	}
 };

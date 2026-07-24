@@ -4,21 +4,36 @@
 	import RegisterWizard from '$lib/components/onboarding/RegisterWizard.svelte';
 
 	let error = $state('');
+	let submitting = $state(false);
 
 	async function handleSubmit(data: Record<string, string>) {
+		if (submitting) return;
+		submitting = true;
 		error = '';
+
 		const formData = new FormData();
 		for (const [key, value] of Object.entries(data)) {
 			formData.set(key, value);
 		}
 
-		// TODO: confirm this matches your +page.server.ts action name
-		const res = await fetch('?/register', { method: 'POST', body: formData });
-		if (!res.ok) {
-			error = 'Registration failed. Please check your details and try again.';
-			return;
+		try {
+			const res = await fetch('?/register', { method: 'POST', body: formData });
+			const result = await res.json();
+
+			if (result.type === 'redirect') {
+				window.location.href = result.location;
+				return;
+			}
+
+			if (result.type === 'failure') {
+				error = result.data?.error ?? 'Registration failed. Please check your details and try again.';
+				return;
+			}
+
+			error = 'Registration failed. Please try again.';
+		} finally {
+			submitting = false;
 		}
-		window.location.href = '/';
 	}
 </script>
 
