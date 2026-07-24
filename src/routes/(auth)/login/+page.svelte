@@ -1,7 +1,12 @@
-<!-- src/routes/(auth)/login/+page.svelte -->
 <script lang="ts">
 	import AuthCard from '$lib/components/onboarding/AuthCard.svelte';
 	import LoginForm from '$lib/components/onboarding/LoginForm.svelte';
+
+	type ActionResult =
+		| { type: 'redirect'; location: string }
+		| { type: 'failure'; data?: { error?: string } }
+		| { type: 'success'; data?: unknown }
+		| { type: 'error'; error?: unknown };
 
 	let identifier = $state('');
 	let password = $state('');
@@ -20,7 +25,7 @@
 
 		try {
 			const res = await fetch('?/login', { method: 'POST', body: formData });
-			const result = await res.json();
+			const result = (await res.json()) as ActionResult;
 
 			if (result.type === 'redirect') {
 				window.location.href = result.location;

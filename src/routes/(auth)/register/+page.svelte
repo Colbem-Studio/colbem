@@ -1,7 +1,12 @@
-<!-- src/routes/(auth)/register/+page.svelte -->
 <script lang="ts">
 	import AuthCard from '$lib/components/onboarding/AuthCard.svelte';
 	import RegisterWizard from '$lib/components/onboarding/RegisterWizard.svelte';
+
+	type ActionResult =
+		| { type: 'redirect'; location: string }
+		| { type: 'failure'; data?: { error?: string } }
+		| { type: 'success'; data?: unknown }
+		| { type: 'error'; error?: unknown };
 
 	let error = $state('');
 	let submitting = $state(false);
@@ -18,7 +23,7 @@
 
 		try {
 			const res = await fetch('?/register', { method: 'POST', body: formData });
-			const result = await res.json();
+			const result = (await res.json()) as ActionResult;
 
 			if (result.type === 'redirect') {
 				window.location.href = result.location;
